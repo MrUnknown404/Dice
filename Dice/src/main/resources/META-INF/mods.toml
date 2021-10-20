@@ -1,0 +1,32 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="GNU General Public License v3.0"
+issueTrackerURL="https://github.com/MrUnknown404/Dice/issues"
+
+[[mods]]
+modId="dice"
+version="1.0.0"
+displayName="Dice"
+displayURL="https://github.com/MrUnknown404/Dice"
+#logoFile="examplemod.png"
+credits=""
+authors="-Unknown-"
+description='''
+Adds a dice!
+
+
+That's it.
+'''
+
+[[dependencies.dice]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.dice]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5]"
+    ordering="NONE"
+    side="BOTH"
