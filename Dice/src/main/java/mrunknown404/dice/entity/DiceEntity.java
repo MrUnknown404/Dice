@@ -3,6 +3,7 @@ package mrunknown404.dice.entity;
 import java.awt.Color;
 
 import mrunknown404.dice.registries.DiceRegistry;
+import mrunknown404.dice.utils.DiceConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -49,7 +50,7 @@ public class DiceEntity extends Entity {
 	public void tick() {
 		super.tick();
 		life++;
-		if (life >= 20 * 5) {
+		if (life >= 20 * DiceConfig.COMMON.diceExpireTime.get()) {
 			remove();
 			level.addParticle(ParticleTypes.POOF, getX(), getY(), getZ(), 0, 0.15625f, 0);
 		}
