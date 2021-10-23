@@ -34,10 +34,6 @@ public class DiceItem extends Item {
 		}
 		
 		entity.awardStat(Stats.ITEM_USED.get(this));
-		if (!entity.isCreative()) {
-			itemstack.shrink(1);
-		}
-		
 		world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.WITCH_THROW, SoundCategory.NEUTRAL, 0.4f, 0.4f / (random.nextFloat() * 0.4f + 0.8f));
 		entity.getCooldowns().addCooldown(this, 10);
 		
