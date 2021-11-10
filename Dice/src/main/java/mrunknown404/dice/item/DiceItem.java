@@ -16,10 +16,12 @@ import net.minecraft.world.World;
 
 public class DiceItem extends Item {
 	private final Color color;
+	private final int diceType;
 	
-	public DiceItem(Color color) {
+	public DiceItem(Color color, int diceType) {
 		super(new Item.Properties().tab(DiceRegistry.DICE).stacksTo(1));
 		this.color = color;
+		this.diceType = diceType;
 	}
 	
 	@Override
@@ -27,8 +29,8 @@ public class DiceItem extends Item {
 		ItemStack itemstack = entity.getItemInHand(hand);
 		
 		if (!world.isClientSide) {
-			DiceEntity dice = new DiceEntity(world, entity, color);
-			dice.setRoll(1 + random.nextInt(6));
+			DiceEntity dice = new DiceEntity(world, entity, color, diceType);
+			dice.setRoll(random);
 			dice.shootFromRotation(entity, entity.xRot, entity.yRot, 0, 0.75f, 1);
 			world.addFreshEntity(dice);
 		}

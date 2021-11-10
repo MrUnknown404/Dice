@@ -1,6 +1,7 @@
 package mrunknown404.dice.entity;
 
 import java.awt.Color;
+import java.util.Random;
 
 import mrunknown404.dice.registries.DiceRegistry;
 import mrunknown404.dice.utils.DiceConfig;
@@ -25,6 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class DiceEntity extends Entity {
 	private static final DataParameter<Integer> DATA_ROLLED = EntityDataManager.defineId(DiceEntity.class, DataSerializers.INT);
+	private static final DataParameter<Integer> DATA_DICE_TYPE = EntityDataManager.defineId(DiceEntity.class, DataSerializers.INT);
 	private static final DataParameter<Integer> DATA_RED = EntityDataManager.defineId(DiceEntity.class, DataSerializers.INT);
 	private static final DataParameter<Integer> DATA_GREEN = EntityDataManager.defineId(DiceEntity.class, DataSerializers.INT);
 	private static final DataParameter<Integer> DATA_BLUE = EntityDataManager.defineId(DiceEntity.class, DataSerializers.INT);
@@ -36,14 +38,16 @@ public class DiceEntity extends Entity {
 		setRed(0);
 		setGreen(0);
 		setBlue(0);
+		setDiceType(0);
 	}
 	
-	public DiceEntity(World world, Entity entity, Color color) {
+	public DiceEntity(World world, Entity entity, Color color, int diceType) {
 		super(DiceRegistry.DICE_ENTITY.get(), world);
 		setPos(entity.getX(), entity.getEyeY() - 0.1f, entity.getZ());
 		setRed(color.getRed());
 		setGreen(color.getGreen());
 		setBlue(color.getBlue());
+		setDiceType(diceType);
 	}
 	
 	@Override
@@ -125,12 +129,12 @@ public class DiceEntity extends Entity {
 	
 	private void setUnderwaterMovement() {
 		Vector3d vector3d = getDeltaMovement();
-		setDeltaMovement(vector3d.x * 0.99f, vector3d.y + (vector3d.y < 0.06f ? 5.0E-4f : 0.0f), vector3d.z * 0.99f);
+		setDeltaMovement(vector3d.x * 0.99f, vector3d.y + (vector3d.y < 0.06f ? 5.0E-4f : 0f), vector3d.z * 0.99f);
 	}
 	
 	private void setUnderLavaMovement() {
 		Vector3d vector3d = getDeltaMovement();
-		setDeltaMovement(vector3d.x * 0.95f, vector3d.y + (vector3d.y < 0.06f ? 5.0E-4f : 0.0f), vector3d.z * 0.95f);
+		setDeltaMovement(vector3d.x * 0.95f, vector3d.y + (vector3d.y < 0.06f ? 5.0E-4f : 0f), vector3d.z * 0.95f);
 	}
 	
 	@Override
@@ -162,8 +166,12 @@ public class DiceEntity extends Entity {
 		return dist > 1;
 	}
 	
-	public void setRoll(int roll) {
+	private void setRoll(int roll) {
 		getEntityData().set(DATA_ROLLED, roll);
+	}
+	
+	public void setRoll(Random r) {
+		getEntityData().set(DATA_ROLLED, 1 + r.nextInt(getDiceType()));
 	}
 	
 	protected int getRoll() {
@@ -194,6 +202,14 @@ public class DiceEntity extends Entity {
 		return getEntityData().get(DATA_BLUE);
 	}
 	
+	public void setDiceType(int diceType) {
+		getEntityData().set(DATA_DICE_TYPE, diceType);
+	}
+	
+	protected int getDiceType() {
+		return getEntityData().get(DATA_DICE_TYPE);
+	}
+	
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
@@ -205,6 +221,7 @@ public class DiceEntity extends Entity {
 		getEntityData().define(DATA_RED, 0);
 		getEntityData().define(DATA_GREEN, 0);
 		getEntityData().define(DATA_BLUE, 0);
+		getEntityData().define(DATA_DICE_TYPE, 0);
 	}
 	
 	@Override
@@ -214,6 +231,7 @@ public class DiceEntity extends Entity {
 		nbt.putInt("Red", getRed());
 		nbt.putInt("Green", getGreen());
 		nbt.putInt("Blue", getBlue());
+		nbt.putInt("DiceType", getDiceType());
 	}
 	
 	@Override
@@ -223,5 +241,6 @@ public class DiceEntity extends Entity {
 		setRed(nbt.getInt("Red"));
 		setGreen(nbt.getInt("Green"));
 		setBlue(nbt.getInt("Blue"));
+		setDiceType(nbt.getInt("DiceType"));
 	}
 }

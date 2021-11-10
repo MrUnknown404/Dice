@@ -14,8 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IRenderFactory<DiceEntity> {
-	private static final ResourceLocation TEX = new ResourceLocation(Dice.MOD_ID, "textures/entity/dice.png");
-	private final DiceEntityModel model = new DiceEntityModel();
+	private static final ResourceLocation D4_TEX = new ResourceLocation(Dice.MOD_ID, "textures/entity/d4.png");
+	private static final ResourceLocation D6_TEX = new ResourceLocation(Dice.MOD_ID, "textures/entity/d6.png");
+	private static final D4Model D4_MODEL = new D4Model();
+	private static final D6Model D6_MODEL = new D6Model();
+	
+	private ResourceLocation tex;
 	private final Minecraft minecraft;
 	
 	public DiceEntityRenderer(EntityRendererManager erm) {
@@ -24,36 +28,39 @@ public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IR
 	}
 	
 	@Override
-	public void render(DiceEntity dice, float var1, float var2, MatrixStack stack, IRenderTypeBuffer buf, int p_225623_6_) {
-		float r1 = (float) Math.PI / 2f;
-		
-		switch (dice.getRoll()) {
-			case 1:
-				model.setRotationAngle((float) Math.PI, 0, 0);
-				break;
-			case 2:
-				model.setRotationAngle(-r1, 0, 0);
-				break;
-			case 3:
-				model.setRotationAngle(0, 0, r1);
-				break;
+	public void render(DiceEntity dice, float var1, float var2, MatrixStack stack, IRenderTypeBuffer buf, int var3) {
+		DiceModel model = null;
+		switch (dice.getDiceType()) {
 			case 4:
-				model.setRotationAngle(0, 0, -r1);
-				break;
-			case 5:
-				model.setRotationAngle(r1, 0, 0);
+				model = D4_MODEL;
+				tex = D4_TEX;
 				break;
 			case 6:
-				model.setRotationAngle(0, 0, 0);
+				model = D6_MODEL;
+				tex = D6_TEX;
+				break;
+			case 8:
+				break;
+			case 10:
+				break;
+			case 12:
+				break;
+			case 20:
 				break;
 		}
 		
+		if (model == null) {
+			System.err.println("Invalid dice? " + dice.getDiceType());
+			return;
+		}
+		
 		boolean flag = !dice.isInvisible();
-		RenderType rendertype = getRenderType(dice, flag, !flag && !dice.isInvisibleTo(minecraft.player), minecraft.shouldEntityAppearGlowing(dice));
+		RenderType rendertype = getRenderType(dice, model, flag, !flag && !dice.isInvisibleTo(minecraft.player), minecraft.shouldEntityAppearGlowing(dice));
 		
 		if (rendertype != null) {
 			IVertexBuilder ivertexbuilder = buf.getBuffer(rendertype);
-			model.renderToBuffer(stack, ivertexbuilder, p_225623_6_, getOverlayCoords(0), dice.getRed() / 255f, dice.getGreen() / 255f, dice.getBlue() / 255f, 1);
+			model.setupRotation(dice);
+			model.renderToBuffer(stack, ivertexbuilder, var3, getOverlayCoords(0), dice.getRed() / 255f, dice.getGreen() / 255f, dice.getBlue() / 255f, 1);
 		}
 	}
 	
@@ -62,12 +69,12 @@ public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IR
 		return OverlayTexture.pack(OverlayTexture.u(f), OverlayTexture.v(false));
 	}
 	
-	private RenderType getRenderType(DiceEntity dice, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
+	private RenderType getRenderType(DiceEntity dice, DiceModel model, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
 		ResourceLocation resourcelocation = getTextureLocation(dice);
 		if (p_230496_3_) {
 			return RenderType.itemEntityTranslucentCull(resourcelocation);
 		} else if (p_230496_2_) {
-			return this.model.renderType(resourcelocation);
+			return model.renderType(resourcelocation);
 		} else {
 			return p_230496_4_ ? RenderType.outline(resourcelocation) : null;
 		}
@@ -75,7 +82,7 @@ public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IR
 	
 	@Override
 	public ResourceLocation getTextureLocation(DiceEntity dice) {
-		return TEX;
+		return tex;
 	}
 	
 	@Override

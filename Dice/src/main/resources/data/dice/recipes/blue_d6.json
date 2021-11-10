@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DCD",
+		"CBC",
+		"ICI"
+	],
+	"key": {
+		"C": {
+			"item": "minecraft:clay_ball"
+		},
+		"B": {
+			"item": "minecraft:stone_button"
+		},
+		"I": {
+			"item": "minecraft:black_dye"
+		},
+		"D": {
+			"item": "minecraft:blue_dye"
+		}
+	},
+	"result": {
+		"item": "dice:blue_d6"
+	}
+}
