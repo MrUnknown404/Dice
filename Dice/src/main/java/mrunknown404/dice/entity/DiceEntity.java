@@ -119,8 +119,7 @@ public class DiceEntity extends Entity {
 		}
 		
 		if (onGround && !lastTickOnGround) {
-			level.playSound(null, getX(), getY(), getZ(), state.getSoundType().getStepSound(), SoundSource.NEUTRAL, 0.5f,
-					0.4f / (random.nextFloat() * 0.4f + 0.8f));
+			level.playSound(null, getX(), getY(), getZ(), state.getSoundType().getStepSound(), SoundSource.NEUTRAL, 0.5f, 0.4f / (random.nextFloat() * 0.4f + 0.8f));
 		}
 		
 		lastTickOnGround = onGround;
