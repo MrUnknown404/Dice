@@ -1,39 +1,34 @@
 package mrunknown404.dice.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import mrunknown404.dice.Dice;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraft.resources.ResourceLocation;
 
-public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IRenderFactory<DiceEntity> {
-	private static final ResourceLocation D4_TEX = new ResourceLocation(Dice.MOD_ID, "textures/entity/d4.png");
+public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements EntityRendererProvider<DiceEntity> {
 	private static final ResourceLocation D6_TEX = new ResourceLocation(Dice.MOD_ID, "textures/entity/d6.png");
-	private static final D4Model D4_MODEL = new D4Model();
 	private static final D6Model D6_MODEL = new D6Model();
 	
 	private ResourceLocation tex;
 	private final Minecraft minecraft;
 	
-	public DiceEntityRenderer(EntityRendererManager erm) {
-		super(erm);
+	public DiceEntityRenderer(Context ctx) {
+		super(ctx);
 		this.minecraft = Minecraft.getInstance();
 	}
 	
 	@Override
-	public void render(DiceEntity dice, float var1, float var2, MatrixStack stack, IRenderTypeBuffer buf, int var3) {
+	public void render(DiceEntity dice, float var1, float var2, PoseStack stack, MultiBufferSource buf, int var3) {
 		DiceModel model = null;
 		switch (dice.getDiceType()) {
 			case 4:
-				model = D4_MODEL;
-				tex = D4_TEX;
 				break;
 			case 6:
 				model = D6_MODEL;
@@ -58,7 +53,7 @@ public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IR
 		RenderType rendertype = getRenderType(dice, model, flag, !flag && !dice.isInvisibleTo(minecraft.player), minecraft.shouldEntityAppearGlowing(dice));
 		
 		if (rendertype != null) {
-			IVertexBuilder ivertexbuilder = buf.getBuffer(rendertype);
+			VertexConsumer ivertexbuilder = buf.getBuffer(rendertype);
 			model.setupRotation(dice);
 			model.renderToBuffer(stack, ivertexbuilder, var3, getOverlayCoords(0), dice.getRed() / 255f, dice.getGreen() / 255f, dice.getBlue() / 255f, 1);
 		}
@@ -86,7 +81,7 @@ public class DiceEntityRenderer extends EntityRenderer<DiceEntity> implements IR
 	}
 	
 	@Override
-	public EntityRenderer<? super DiceEntity> createRenderFor(EntityRendererManager erm) {
-		return new DiceEntityRenderer(erm);
+	public EntityRenderer<DiceEntity> create(Context ctx) {
+		return new DiceEntityRenderer(ctx);
 	}
 }

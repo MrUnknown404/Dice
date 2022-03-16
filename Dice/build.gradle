@@ -7,17 +7,20 @@ buildscript {
 		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 	}
 }
+
+plugins {
+	id 'eclipse'
+	id 'maven-publish'
+}
 apply plugin: 'net.minecraftforge.gradle'
 
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
 version = mod_version
 archivesBaseName = 'Dice-' + mc_version
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
 	mappings channel: 'official', version: mc_version
 	// makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
@@ -27,8 +30,6 @@ minecraft {
 			workingDirectory project.file('run')
 			
 			property 'forge.logging.markers', ''
-			property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 			property 'forge.logging.console.level', 'debug'
 			
 			mods {
@@ -78,7 +79,6 @@ dependencies {
 	minecraft 'net.minecraftforge:forge:' + mc_version + '-' + forge_version
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
 	manifest {
 		attributes([
@@ -98,3 +98,7 @@ jar {
 jar.finalizedBy('reobfJar') 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
