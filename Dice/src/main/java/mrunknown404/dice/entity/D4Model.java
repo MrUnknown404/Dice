@@ -3,8 +3,6 @@ package mrunknown404.dice.entity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.BufferBuilder;
-
 public class D4Model extends DiceModel {
 	public D4Model() {
 		
@@ -22,6 +20,6 @@ public class D4Model extends DiceModel {
 	
 	@Override
 	public void renderToBuffer(MatrixStack stack, IVertexBuilder buf, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		BufferBuilder b = (BufferBuilder) buf;
+		
 	}
 }
