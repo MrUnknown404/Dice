@@ -13,7 +13,7 @@ public class DiceConfig {
 		
 		public Common(ForgeConfigSpec.Builder builder) {
 			builder.push("dice");
-			this.diceExpireTime = builder.comment("How many seconds should the dice last before exploding").worldRestart().defineInRange("dice expire time",
+			this.diceExpireTime = builder.comment("How many seconds should the dice last before exploding?").worldRestart().defineInRange("dice expire time",
 					DEFAULT_DICE_EXPIRE_TIME, 1, 60);
 			builder.pop();
 		}
